@@ -34,38 +34,37 @@ class _MobileTabletLayout extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final double height = size.height;
 
-    // More space for bottom content on tablets
-    final double contentHeightFactor = isTablet ? 0.5 : 0.45;
-    final double contentHeight = height * contentHeightFactor;
+    // Bottom card height
+    final double contentHeight = height * (isTablet ? 0.5 : 0.45);
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        // SafeArea so it doesn’t go under status bar / notch
-        top: true,
-        bottom: false,
-        child: Stack(
+        child: Column(
           children: [
-            // BACKGROUND IMAGE (goes first so it stays behind)
-            SizedBox(
-              height: height * 0.75,
+            /// 🔹 TOP IMAGE AREA (fixed image)
+            Container(
+              height: height - contentHeight, // Remaining height
               width: double.infinity,
-              child: Image.asset("assets/images/pro.png", fit: BoxFit.cover),
+              decoration: const BoxDecoration(
+                // Background image inside container
+                image: DecorationImage(
+                  image: AssetImage("assets/images/pro.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
 
-            // BOTTOM CARD CONTENT
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: contentHeight,
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  horizontal: isTablet ? 32.0 : 24.0,
-                  vertical: 24.0,
-                ),
-                decoration: BoxDecoration(color: Colors.white),
-                child: const _ContentSection(isWide: false),
+            /// 🔹 BOTTOM CONTENT CARD
+            Container(
+              height: contentHeight,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: isTablet ? 32.0 : 24.0,
+                vertical: 24.0,
               ),
+              decoration: const BoxDecoration(color: Colors.white),
+              child: const _ContentSection(isWide: false),
             ),
           ],
         ),
@@ -180,7 +179,7 @@ class _ContentSection extends StatelessWidget {
                       ),
                       SizedBox(height: 24),
                       Text(
-                        'Scan. Play. Win exclusive discounts on Softroniics\nand The Animation Campus training programs!',
+                        'Scan. Play. Win exclusive Gifts from Softroniics\nand The Animation Campus training programs!',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
