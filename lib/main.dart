@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:softech_scratch_n_win/admin/admin_login_screen.dart';
 import 'package:softech_scratch_n_win/firebase_options.dart';
+import 'package:softech_scratch_n_win/view/coupen_page.dart';
 import 'package:softech_scratch_n_win/view/registration_screen.dart';
 import 'package:softech_scratch_n_win/view/softtac_mania_screen.dart';
 
@@ -30,6 +31,12 @@ class SoftroniicsScratchApp extends StatelessWidget {
         '/': (_) => const RegistrationScreen(),
         '/admin-login': (_) => const AdminLoginScreen(),
         '/onboard': (_) => SoftTacManiaScreen(),
+        '/frame': (_) => CouponPage(
+          couponId: 'ABC123XYZ',
+          name: 'John Doe',
+          email: 'john@gmail.com',
+          discount: 25,
+        ),
       },
     );
   }

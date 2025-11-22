@@ -23,7 +23,7 @@ class SoftTacManiaScreen extends StatelessWidget {
 }
 
 class _MobileLayout extends StatelessWidget {
-  const _MobileLayout({super.key});
+  const _MobileLayout();
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +32,7 @@ class _MobileLayout extends StatelessWidget {
         size.height * 0.45; // bottom content area (dynamic)
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           // Background image
@@ -71,7 +72,7 @@ class _MobileLayout extends StatelessWidget {
 }
 
 class _DesktopWebLayout extends StatelessWidget {
-  const _DesktopWebLayout({super.key});
+  const _DesktopWebLayout();
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +109,7 @@ class _DesktopWebLayout extends StatelessWidget {
 
 class _ContentSection extends StatelessWidget {
   final bool isWide;
-  const _ContentSection({super.key, required this.isWide});
+  const _ContentSection({required this.isWide});
 
   @override
   Widget build(BuildContext context) {
