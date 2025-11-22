@@ -93,14 +93,14 @@ class FirestoreService {
   }
 
   Stream<List<ScratchEntry>> listenEntries({int? discountFilter}) {
-    Query<Map<String, dynamic>> query = _collection.orderBy(
-      'createdAt',
-      descending: true,
-    );
+    Query<Map<String, dynamic>> query = _collection;
 
     if (discountFilter != null) {
       query = query.where('discount', isEqualTo: discountFilter);
     }
+
+    // Always order by createdAt (latest first)
+    query = query.orderBy('createdAt', descending: true);
 
     return query.snapshots().map((snapshot) {
       return snapshot.docs

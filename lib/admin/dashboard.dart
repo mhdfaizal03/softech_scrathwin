@@ -42,7 +42,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
                 if (snapshot.hasError) {
                   return Center(
-                    child: Text(
+                    child: SelectableText(
                       'Error loading entries.\n${snapshot.error}',
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.red),
@@ -265,21 +265,23 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '${e.discount}% OFF',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.orange,
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${e.discount}% OFF',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.orange,
+                          ),
                         ),
                       ),
                     ),
@@ -288,35 +290,52 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 const SizedBox(height: 6),
 
                 if (e.qualification.isNotEmpty) ...[
-                  Text(
-                    e.qualification,
-                    style: const TextStyle(fontSize: 13, color: Colors.black87),
+                  Expanded(
+                    child: Text(
+                      e.qualification,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.black87,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 2),
                 ],
 
-                Text(
-                  e.email,
-                  style: const TextStyle(fontSize: 13, color: Colors.black54),
+                Expanded(
+                  child: Text(
+                    e.email,
+                    style: const TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  e.phone,
-                  style: const TextStyle(fontSize: 13, color: Colors.black54),
+                Expanded(
+                  child: Text(
+                    e.phone,
+                    style: const TextStyle(fontSize: 13, color: Colors.black54),
+                  ),
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _formatDate(e.createdAt),
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
-                    ),
-                    Text(
-                      'Code: ${e.code}',
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
-                    ),
-                  ],
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _formatDate(e.createdAt),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        'Code: ${e.code}',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
