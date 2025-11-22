@@ -737,31 +737,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          Container(
-            height: 55,
-            decoration: BoxDecoration(
-              color: inputFieldColor,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: TextFormField(
-              controller: controller,
-              keyboardType: keyboardType,
-              validator: validator,
-              style: const TextStyle(color: primaryTextColor),
-              decoration: InputDecoration(
-                hintText: hintText,
-                filled: true,
-                fillColor: Colors.grey.shade300,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 15,
-                ),
-                hintStyle: const TextStyle(color: secondaryTextColor),
+          TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            validator: validator,
+            style: const TextStyle(color: primaryTextColor),
+            decoration: InputDecoration(
+              hintText: hintText,
+              filled: true,
+              fillColor: Colors.grey.shade300,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.grey[300]!),
               ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 15,
+              ),
+              hintStyle: const TextStyle(color: secondaryTextColor),
             ),
           ),
         ],
