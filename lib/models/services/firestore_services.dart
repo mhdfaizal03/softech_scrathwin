@@ -47,16 +47,9 @@ class FirestoreService {
   /// Check if we can still give [discount] today, limited to [maxPerDay]
   Future<bool> canGiveDiscountToday(int discount, int maxPerDay) async {
     final now = DateTime.now();
-    final startOfDay = DateTime(now.year, now.month, now.day);
-    final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
     final query = await _collection
         .where('discount', isEqualTo: discount)
-        .where(
-          'createdAt',
-          isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay),
-        )
-        .where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
         .get();
 
     return query.docs.length < maxPerDay;
