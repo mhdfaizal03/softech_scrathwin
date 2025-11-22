@@ -1,4 +1,4 @@
-import 'dart:math'; // for pi
+import 'dart:math'; // for pi + Random
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -19,7 +19,11 @@ class ScratchScreen extends StatefulWidget {
   final String name;
   final String email;
   final String phone;
+
+  /// If 0 → discount will be generated with weighted logic.
+  /// If >0 → this value will be used directly.
   final int discount;
+
   final String code;
   final bool alreadyPlayed;
 
@@ -54,6 +58,9 @@ class _ScratchScreenState extends State<ScratchScreen>
   // For capturing the coupon as an image
   final GlobalKey _couponKey = GlobalKey();
 
+  // The actual discount value used in UI (after weighting/override)
+  late int _discount;
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +83,13 @@ class _ScratchScreenState extends State<ScratchScreen>
     _leftConfetti = ConfettiController(duration: const Duration(seconds: 2));
     _rightConfetti = ConfettiController(duration: const Duration(seconds: 2));
 
+    // Decide final discount:
+    // - If backend/admin passed a non-zero discount, use that.
+    // - If 0, generate using weighted logic.
+    _discount = widget.discount > 0
+        ? widget.discount
+        : _generateWeightedDiscount();
+
     if (widget.alreadyPlayed) {
       _revealed = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -83,6 +97,31 @@ class _ScratchScreenState extends State<ScratchScreen>
         _leftConfetti.play();
         _rightConfetti.play();
       });
+    }
+  }
+
+  /// Weighted discount logic:
+  ///
+  /// 10% → 50% chance
+  /// 15% → 30% chance
+  /// 20% → 15% chance
+  /// 25% →  5% chance
+  int _generateWeightedDiscount() {
+    final random = Random();
+    final r = random.nextInt(100); // 0–99
+
+    if (r < 50) {
+      // 0–49 (50%)
+      return 10;
+    } else if (r < 80) {
+      // 50–79 (30%)
+      return 15;
+    } else if (r < 95) {
+      // 80–94 (15%)
+      return 20;
+    } else {
+      // 95–99 (5%)
+      return 25;
     }
   }
 
@@ -95,7 +134,6 @@ class _ScratchScreenState extends State<ScratchScreen>
   }
 
   String get _name => widget.name;
-  int get _discount => widget.discount;
   String get _email => widget.email;
   String get _code => widget.code;
 
@@ -306,7 +344,7 @@ class _ScratchScreenState extends State<ScratchScreen>
             ),
             const SizedBox(height: 4),
             Text(
-              '${widget.discount}% OFF!',
+              '$_discount% OFF!',
               style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
