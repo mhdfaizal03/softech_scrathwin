@@ -26,7 +26,7 @@ class SoftroniicsScratchApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         useMaterial3: true,
       ),
-      initialRoute: '/onboard',
+      initialRoute: '/admin-login',
       routes: {
         '/': (_) => const RegistrationScreen(),
         '/admin-login': (_) => const AdminLoginScreen(),

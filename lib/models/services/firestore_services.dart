@@ -2,20 +2,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:softech_scratch_n_win/models/scratch_entry.dart';
 
 class FirestoreService {
-  final _collection = FirebaseFirestore.instance.collection('scratch_entries');
+  FirestoreService()
+    : _collection = FirebaseFirestore.instance.collection('scratch_entries');
+
+  final CollectionReference<Map<String, dynamic>> _collection;
+
+  /// Normalize phone number (keep only digits)
+  String _normalizePhone(String phone) {
+    return phone.replaceAll(RegExp(r'\D'), '');
+  }
 
   Future<ScratchEntry?> getEntryByEmailOrPhone(
     String email,
     String phone,
   ) async {
-    final query = await _collection.where('email', isEqualTo: email).get();
+    final normalizedEmail = email.trim();
+    final normalizedPhone = _normalizePhone(phone);
+
+    // 🔹 First try email
+    final query = await _collection
+        .where('email', isEqualTo: normalizedEmail)
+        .limit(1)
+        .get();
 
     if (query.docs.isNotEmpty) {
       final doc = query.docs.first;
       return ScratchEntry.fromMap(doc.id, doc.data());
     }
 
-    final phoneQuery = await _collection.where('phone', isEqualTo: phone).get();
+    // 🔹 Then try phone
+    final phoneQuery = await _collection
+        .where('phone', isEqualTo: normalizedPhone)
+        .limit(1)
+        .get();
 
     if (phoneQuery.docs.isNotEmpty) {
       final doc = phoneQuery.docs.first;
@@ -25,16 +44,19 @@ class FirestoreService {
     return null;
   }
 
+  /// Check if we can still give [discount] today, limited to [maxPerDay]
   Future<bool> canGiveDiscountToday(int discount, int maxPerDay) async {
     final now = DateTime.now();
     final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
     final query = await _collection
         .where('discount', isEqualTo: discount)
         .where(
           'createdAt',
-          //  isGreaterThanOrEqualTo: startOfDay
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay),
         )
+        .where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
         .get();
 
     return query.docs.length < maxPerDay;
@@ -42,24 +64,32 @@ class FirestoreService {
 
   Future<ScratchEntry> createEntry({
     required String name,
-    required int age,
+    required String qualification, // ✅ replaced age
     required String email,
     required String phone,
     required int discount,
-    required String code, // 👈 NEW
+    required String code,
   }) async {
+    final now = DateTime.now();
+    final normalizedPhone = _normalizePhone(phone);
+
     final docRef = await _collection.add({
-      'name': name,
-      'age': age,
-      'email': email,
-      'phone': phone,
+      'name': name.trim(),
+      'qualification': qualification.trim(), // ✅ new field
+      'email': email.trim(),
+      'phone': normalizedPhone,
       'discount': discount,
-      'code': code, // 👈 NEW
-      'createdAt': DateTime.now(),
+      'code': code.trim(),
+      'createdAt': Timestamp.fromDate(now),
     });
 
     final snapshot = await docRef.get();
-    return ScratchEntry.fromMap(snapshot.id, snapshot.data()!);
+    final data = snapshot.data();
+    if (data == null) {
+      throw StateError('Scratch entry document has no data (id: ${docRef.id})');
+    }
+
+    return ScratchEntry.fromMap(docRef.id, data);
   }
 
   Stream<List<ScratchEntry>> listenEntries({int? discountFilter}) {
